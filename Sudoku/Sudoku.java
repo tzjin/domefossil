@@ -19,6 +19,7 @@ public class Sudoku {
                 }
             }
 
+            solve();
             printGrid();
            
         }
@@ -27,22 +28,29 @@ public class Sudoku {
 
     // this is so icky and inefficient
     public static void solve () {
-        sol = new LinkedList<Integer>[9][9];
+        sol = new LinkedList[9][9];
 
-        for (int i = 0; i < 9; i++) 
-            for (int j = 0; j < 9; j++) {
-                
-                sol[i][j] = new LinkedList<Integer>;
-                
-                for (int k = 0; k < 9; k++) {
-                    if(grid[i][j] != 0 && legal(i, j, k))
-                        sol[i][j].add(k);
+        while(!solved()) {
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    if (grid[i][j] != 0)
+                        continue;
+                    
+                    sol[i][j] = new LinkedList<Integer>();
+                    
+                    for (int k = 1; k <= 9; k++) 
+                        if(legal(i, j, k))
+                            sol[i][j].add(k);
+                    
+                    if(sol[i][j].size() == 1)
+                        grid[i][j] = sol[i][j].remove();
+
                 }
-                
-                if(sol[i][j].size() == 1)
-                    grid[i][j] = sol[i][i].remove();
-
             }
+
+
+            printGrid();
+        }
                 
         
     }
@@ -50,26 +58,26 @@ public class Sudoku {
     private static boolean legal (int x, int y, int num) {
         for (int i = 0; i < 9; i++) 
             if ((grid[i][y] == num) || (grid[x][i] == num))
-                return false
+                return false;
         
-        int x1 %= 3;
-        int y1 %= 3;
-
         x /= 3;
         y /= 3;
 
         for(int i = 0; i < 3; i++) 
             for (int j = 0; j < 3; j++ )
-                if (grid[x * 3 + x1][y * 3 + y1] == num)
+                if (grid[x * 3 + i][y * 3 + j] == num)
                     return false;
 
         return true;
     }
 
     private static boolean solved() {
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) 
             for (int j = 0; j < 9; j++) 
-                System.out.print(grid[i][j] + " ");
+                if (grid[i][j] == 0)
+                    return false;
+
+        return true;
     }
 
     public static void printGrid() {
